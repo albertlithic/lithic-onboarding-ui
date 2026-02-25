@@ -1,24 +1,39 @@
 'use client';
 
 import LithicLogo from './LithicLogo';
+import { Phase } from './types';
 
 interface HeaderProps {
-  currentStep: number;
-  totalSteps: number;
+  phase: Phase;
+  completedSections: number;
+  totalSections: number;
   onFinishLater?: () => void;
+  onBackToHub?: () => void;
 }
 
-export default function Header({ currentStep, totalSteps, onFinishLater }: HeaderProps) {
-  const progressPercent = ((currentStep - 1) / totalSteps) * 100;
+export default function Header({ phase, completedSections, totalSections, onFinishLater, onBackToHub }: HeaderProps) {
+  const progressPercent = totalSections > 0 ? (completedSections / totalSections) * 100 : 0;
+  const phaseLabel = phase === 'phase-1' ? 'Phase 1' : 'Phase 2';
 
   return (
     <header className="w-full flex items-center justify-between px-8 h-16 bg-[#1A1A1A] border-b border-[#2A2A2A]">
-      {/* Logo */}
+      {/* Left: Logo + Back */}
       <div className="flex items-center gap-3">
+        {onBackToHub && (
+          <button
+            onClick={onBackToHub}
+            className="flex items-center gap-1.5 text-[#AAAAAA] text-sm font-medium hover:text-[#F0F0F0] transition-colors mr-2"
+          >
+            <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="shrink-0">
+              <path d="M7 1L1 7L7 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Back
+          </button>
+        )}
         <LithicLogo />
       </div>
 
-      {/* Title */}
+      {/* Center: Title */}
       <span
         className="text-[#F0F0F0] text-lg font-medium"
         style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
@@ -28,19 +43,17 @@ export default function Header({ currentStep, totalSteps, onFinishLater }: Heade
 
       {/* Right: progress + finish later */}
       <div className="flex items-center gap-4">
-        {/* Progress */}
         <div className="flex items-center gap-2">
-          <span className="text-[#7F94FF] text-sm font-medium">Step {currentStep}</span>
+          <span className="text-[#7F94FF] text-sm font-medium">{phaseLabel}</span>
           <div className="relative w-[100px] h-[2px] bg-[#444444] rounded-full overflow-hidden">
             <div
               className="absolute inset-y-0 left-0 bg-[#7F94FF] rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-[#AAAAAA] text-sm">of {totalSteps}</span>
+          <span className="text-[#AAAAAA] text-sm">{completedSections}/{totalSections}</span>
         </div>
 
-        {/* Finish Later */}
         <button
           onClick={onFinishLater}
           className="flex items-center gap-1.5 text-[#AAAAAA] text-sm font-medium hover:text-[#F0F0F0] transition-colors"

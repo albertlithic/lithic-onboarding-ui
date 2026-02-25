@@ -6,13 +6,13 @@ import Button from '../Button';
 interface OnboardingStartProps {
   agreedToTerms: boolean;
   onAgreementChange: (agreed: boolean) => void;
-  onContinue: () => void;
+  onSave: () => void;
 }
 
 export default function OnboardingStart({
   agreedToTerms,
   onAgreementChange,
-  onContinue,
+  onSave,
 }: OnboardingStartProps) {
   return (
     <div className="flex flex-col gap-6">
@@ -20,13 +20,13 @@ export default function OnboardingStart({
         className="text-[#F0F0F0] text-2xl font-medium"
         style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
       >
-        Onboarding
+        Legal &amp; Compliance
       </h1>
 
       <p className="text-[#AAAAAA] text-sm leading-relaxed">
+        Before we begin, please review and agree to the following authorizations.
         This onboarding process will require you to share detailed business
-        information. We recommend you have the following information ready
-        before you begin:
+        information. We recommend you have the following ready:
       </p>
 
       <ul className="text-[#AAAAAA] text-sm leading-relaxed space-y-1 list-disc list-inside">
@@ -56,9 +56,9 @@ export default function OnboardingStart({
         variant="primary"
         fullWidth
         disabled={!agreedToTerms}
-        onClick={onContinue}
+        onClick={onSave}
       >
-        Start Onboarding
+        Save &amp; Return to Checklist
       </Button>
     </div>
   );

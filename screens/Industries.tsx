@@ -7,8 +7,7 @@ import { IndustriesData } from '../types';
 interface IndustriesProps {
   data: IndustriesData;
   onChange: (data: IndustriesData) => void;
-  onBack: () => void;
-  onContinue: () => void;
+  onSave: () => void;
 }
 
 const INDUSTRIES: { key: keyof IndustriesData; label: string }[] = [
@@ -19,7 +18,7 @@ const INDUSTRIES: { key: keyof IndustriesData; label: string }[] = [
   { key: 'firearms', label: 'Our program involves firearms' },
 ];
 
-export default function Industries({ data, onChange, onBack, onContinue }: IndustriesProps) {
+export default function Industries({ data, onChange, onSave }: IndustriesProps) {
   const toggle = (key: keyof IndustriesData) => (checked: boolean) =>
     onChange({ ...data, [key]: checked });
 
@@ -47,14 +46,9 @@ export default function Industries({ data, onChange, onBack, onContinue }: Indus
         ))}
       </div>
 
-      <div className="flex gap-4">
-        <Button variant="secondary" fullWidth onClick={onBack}>
-          Go Back
-        </Button>
-        <Button variant="primary" fullWidth onClick={onContinue}>
-          Continue
-        </Button>
-      </div>
+      <Button variant="primary" fullWidth onClick={onSave}>
+        Save &amp; Return to Checklist
+      </Button>
     </div>
   );
 }
