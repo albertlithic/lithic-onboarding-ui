@@ -1,23 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import Header from './Header';
+import DashboardLayout from './layouts/DashboardLayout';
+import OnboardingHeader from './layouts/OnboardingHeader';
+import MagicLinkHeader from './layouts/MagicLinkHeader';
 import PhaseHub from './screens/PhaseHub';
 import OnboardingStart from './screens/OnboardingStart';
 import ServiceType from './screens/ServiceType';
 import Industries from './screens/Industries';
 import BusinessDetailsPart1 from './screens/BusinessDetailsPart1';
 import BusinessDetailsPart2 from './screens/BusinessDetailsPart2';
+import ControlPersonOwners from './screens/ControlPersonOwners';
 import PersonList from './screens/PersonList';
 import PersonDetails from './screens/PersonDetails';
 import DocumentCollection from './screens/DocumentCollection';
 import Contacts from './screens/Contacts';
+import OtpLogin from './screens/OtpLogin';
+import MagicLinkForm from './screens/MagicLinkForm';
+import MoreInfoModal from './screens/MoreInfoModal';
 import {
   OnboardingData,
   Phase,
   ActiveSection,
   FlowPath,
   HubSectionDef,
+  ViewMode,
+  ExternalInviteeStep,
   resolveFlowPath,
   createEmptyContact,
 } from './types';
@@ -61,6 +69,8 @@ const INITIAL_DATA: OnboardingData = {
     productUpdateContact: createEmptyContact(),
     sameAsTechnical: false,
   },
+  charityNonProfitExemption: false,
+  hasUbos: true,
 };
 
 // ─── Completion Checks ───────────────────────────────────────────
@@ -74,7 +84,6 @@ function isPhase1ServiceTypeComplete(data: OnboardingData): boolean {
 }
 
 function isPhase1IndustriesComplete(_data: OnboardingData): boolean {
-  // Industries is always "complete" once visited (any combination is valid)
   return true;
 }
 
@@ -92,14 +101,17 @@ function isPhase2BusinessDetailsComplete(data: OnboardingData, flowPath: FlowPat
 function isPhase2PeopleComplete(data: OnboardingData, flowPath: FlowPath): boolean {
   if (flowPath === 'public') {
     const signers = data.persons.filter((p) => p.role === 'authorized-signer');
-    return signers.length > 0 && signers.every((p) => p.status === 'completed');
+    return signers.length > 0 && signers.every((p) => p.status === 'completed' || p.status === 'submitted');
+  }
+  if (data.charityNonProfitExemption) {
+    const cps = data.persons.filter((p) => p.role === 'control-person');
+    return cps.length > 0 && cps.every((p) => p.status === 'completed' || p.status === 'submitted');
   }
   const cps = data.persons.filter((p) => p.role === 'control-person');
   const bos = data.persons.filter((p) => p.role === 'beneficial-owner');
-  return (
-    cps.length > 0 && cps.every((p) => p.status === 'completed') &&
-    bos.length > 0 && bos.every((p) => p.status === 'completed')
-  );
+  const cpsDone = cps.length > 0 && cps.every((p) => p.status === 'completed' || p.status === 'submitted');
+  const bosDone = data.hasUbos === false || (bos.length > 0 && bos.every((p) => p.status === 'completed' || p.status === 'submitted'));
+  return cpsDone && bosDone;
 }
 
 function isPhase2FinancialDocsComplete(data: OnboardingData): boolean {
@@ -118,7 +130,7 @@ function getPhase1Sections(data: OnboardingData): HubSectionDef[] {
   return [
     {
       id: 'welcome',
-      title: 'Legal & Compliance',
+      title: 'Agreements',
       description: 'Review and agree to authorizations',
       isComplete: isPhase1WelcomeComplete(data),
     },
@@ -130,7 +142,7 @@ function getPhase1Sections(data: OnboardingData): HubSectionDef[] {
     },
     {
       id: 'industries',
-      title: 'Industries',
+      title: "What You're Building",
       description: 'Identify applicable business categories',
       isComplete: isPhase1IndustriesComplete(data),
     },
@@ -161,28 +173,18 @@ function getPhase2Sections(data: OnboardingData, flowPath: FlowPath): HubSection
       isComplete: isPhase2PeopleComplete(data, flowPath),
     });
   } else {
-    sections.push(
-      {
-        id: 'control-persons',
-        title: 'Control Persons',
-        description: 'Add individuals with management responsibility',
-        isComplete: data.persons.filter((p) => p.role === 'control-person').length > 0 &&
-          data.persons.filter((p) => p.role === 'control-person').every((p) => p.status === 'completed'),
-      },
-      {
-        id: 'beneficial-owners',
-        title: 'Beneficial Owners',
-        description: 'Add owners with 25%+ ownership',
-        isComplete: data.persons.filter((p) => p.role === 'beneficial-owner').length > 0 &&
-          data.persons.filter((p) => p.role === 'beneficial-owner').every((p) => p.status === 'completed'),
-      },
-    );
+    sections.push({
+      id: 'control-persons',
+      title: 'Control Person & Owners',
+      description: 'Add control persons and beneficial owners',
+      isComplete: isPhase2PeopleComplete(data, flowPath),
+    });
   }
 
   if (flowPath === 'pm-private') {
     sections.push({
       id: 'financial-docs',
-      title: 'Financial Documents',
+      title: 'Business Documents',
       description: 'Bank statements and financial records',
       isComplete: isPhase2FinancialDocsComplete(data),
     });
@@ -206,9 +208,12 @@ export default function OnboardingFlow() {
   const [activeSection, setActiveSection] = useState<ActiveSection>(null);
   const [editingPersonId, setEditingPersonId] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
-
-  // Track which Phase 1 sections have been visited (for Industries always-complete logic)
   const [visitedSections, setVisitedSections] = useState<Set<string>>(new Set());
+
+  // External invitee state
+  const [viewMode, setViewMode] = useState<ViewMode>('main');
+  const [externalStep, setExternalStep] = useState<ExternalInviteeStep>('otp');
+  const [moreInfoOpen, setMoreInfoOpen] = useState(false);
 
   const flowPath = resolveFlowPath(data.serviceType, data.businessDetailsPart1.companyType);
 
@@ -225,29 +230,65 @@ export default function OnboardingFlow() {
     setEditingPersonId(null);
   };
 
+  // ─── External Invitee Flow ─────────
+  if (viewMode === 'external-invitee') {
+    return (
+      <div className="min-h-screen bg-[var(--bg-default)] flex flex-col">
+        <MagicLinkHeader onMoreInfo={() => setMoreInfoOpen(true)} />
+        <main className="flex-1 flex flex-col">
+          {externalStep === 'otp' ? (
+            <OtpLogin
+              maskedEmail="e***@example.com"
+              onSubmit={() => setExternalStep('form')}
+              onResend={() => {}}
+              onMoreInfo={() => setMoreInfoOpen(true)}
+            />
+          ) : (
+            <MagicLinkForm
+              inviterEmail="lucy@example.com"
+              role="beneficial-owner"
+              onSubmit={(personData) => {
+                setData({
+                  ...data,
+                  persons: data.persons.map((p) =>
+                    p.inviteEmail === personData.email ? { ...personData, status: 'submitted' } : p
+                  ),
+                });
+                setViewMode('main');
+              }}
+            />
+          )}
+        </main>
+        <MoreInfoModal open={moreInfoOpen} onClose={() => setMoreInfoOpen(false)} />
+      </div>
+    );
+  }
+
   // ─── Completion ────────────────────
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
-        <div className="w-[400px] flex flex-col items-center gap-4 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#3F54BF] flex items-center justify-center">
-            <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
-              <path d="M2 8L8 14L18 2" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+      <DashboardLayout completedSteps={0} totalSteps={0}>
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="w-[400px] flex flex-col items-center gap-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-[var(--accent-strong-bg)] flex items-center justify-center">
+              <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
+                <path d="M2 8L8 14L18 2" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h1
+              className="text-2xl font-medium text-[var(--fg-strong)]"
+              style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
+            >
+              Application Submitted
+            </h1>
+            <p className="text-sm text-[var(--fg-default)] leading-relaxed">
+              Thank you for completing the onboarding process. Our compliance
+              team will review your information and reach out within 2–3 business days.
+            </p>
           </div>
-          <h1
-            className="text-[#F0F0F0] text-2xl font-medium"
-            style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
-          >
-            Application Submitted
-          </h1>
-          <p className="text-[#AAAAAA] text-sm leading-relaxed">
-            Thank you for completing the onboarding process. Our compliance
-            team will review your information and reach out within 2–3 business days.
-          </p>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
@@ -257,7 +298,6 @@ export default function OnboardingFlow() {
     ? getPhase1Sections(data)
     : flowPath ? getPhase2Sections(data, flowPath) : [];
 
-  // Override industries completion with visited tracking
   const adjustedSections = currentSections.map((s) => {
     if (s.id === 'industries') {
       return { ...s, isComplete: visitedSections.has('industries') };
@@ -268,27 +308,10 @@ export default function OnboardingFlow() {
   const completedCount = adjustedSections.filter((s) => s.isComplete).length;
   const totalCount = adjustedSections.length;
 
-  // ─── Render ────────────────────────
+  // ─── Render Step Content ───────────
 
-  const renderContent = () => {
-    // ── Phase 1 Hub ──
-    if (phase === 'phase-1' && activeSection === null) {
-      return (
-        <PhaseHub
-          title="Getting Started"
-          description="Complete each section below to proceed. You can fill them out in any order."
-          sections={adjustedSections}
-          onSectionClick={(id) => {
-            setActiveSection(id as ActiveSection);
-            markVisited(id);
-          }}
-          onContinue={() => setPhase('phase-2')}
-          continueLabel="Continue to Next Phase"
-        />
-      );
-    }
-
-    // ── Phase 1 Sections ──
+  const renderStepContent = () => {
+    // Phase 1 sections
     if (phase === 'phase-1') {
       switch (activeSection) {
         case 'welcome':
@@ -326,26 +349,7 @@ export default function OnboardingFlow() {
       }
     }
 
-    // ── Phase 2 Hub ──
-    if (phase === 'phase-2' && activeSection === null && !editingPersonId) {
-      if (!flowPath) {
-        // Shouldn't happen, but guard
-        setPhase('phase-1');
-        return null;
-      }
-      return (
-        <PhaseHub
-          title={flowPath === 'public' ? 'Public Company Details' : flowPath === 'pm-private' ? 'Program Managed Details' : 'Processor Only Details'}
-          description="Complete each section below. You can fill them out in any order."
-          sections={adjustedSections}
-          onSectionClick={(id) => setActiveSection(id as ActiveSection)}
-          onContinue={() => setCompleted(true)}
-          continueLabel="Submit Application"
-        />
-      );
-    }
-
-    // ── Person Details (editing a specific person) ──
+    // Person Details (editing a specific person)
     if (editingPersonId) {
       const person = data.persons.find((p) => p.id === editingPersonId);
       if (!person || !flowPath) return null;
@@ -360,7 +364,6 @@ export default function OnboardingFlow() {
             });
           }}
           onSave={() => {
-            // Mark person as completed
             setData({
               ...data,
               persons: data.persons.map((p) =>
@@ -374,7 +377,7 @@ export default function OnboardingFlow() {
       );
     }
 
-    // ── Phase 2 Sections ──
+    // Phase 2 sections
     if (phase === 'phase-2' && flowPath) {
       switch (activeSection) {
         case 'business-details-2':
@@ -387,21 +390,13 @@ export default function OnboardingFlow() {
             />
           );
         case 'control-persons':
+          // Combined Control Person & Owners screen for private flows
           return (
-            <PersonList
-              role="control-person"
+            <ControlPersonOwners
               persons={data.persons}
-              onChange={(persons) => setData({ ...data, persons })}
-              onEditPerson={(id) => setEditingPersonId(id)}
-              onSave={goToHub}
-            />
-          );
-        case 'beneficial-owners':
-          return (
-            <PersonList
-              role="beneficial-owner"
-              persons={data.persons}
-              onChange={(persons) => setData({ ...data, persons })}
+              charityNonProfitExemption={data.charityNonProfitExemption}
+              hasUbos={data.hasUbos}
+              onChange={(updates) => setData({ ...data, ...updates })}
               onEditPerson={(id) => setEditingPersonId(id)}
               onSave={goToHub}
             />
@@ -438,21 +433,59 @@ export default function OnboardingFlow() {
     return null;
   };
 
-  return (
-    <div className="min-h-screen bg-[#1A1A1A] flex flex-col">
-      <Header
-        phase={phase}
-        completedSections={completedCount}
-        totalSections={totalCount}
-        onFinishLater={handleFinishLater}
-        onBackToHub={activeSection || editingPersonId ? goToHub : undefined}
-      />
+  // ─── Main Render ───────────────────
 
-      <main className="flex-1 flex justify-center py-10 px-4 overflow-y-auto">
-        <div className="w-full max-w-[400px]">
-          {renderContent()}
+  const isOnHub = activeSection === null && !editingPersonId;
+
+  return (
+    <DashboardLayout
+      completedSteps={completedCount}
+      totalSteps={totalCount}
+    >
+      {isOnHub ? (
+        // Hub view — no step header
+        <div className="px-12 py-6">
+          <div className="max-w-[640px]">
+            {phase === 'phase-1' ? (
+              <PhaseHub
+                title="Onboarding"
+                description="You can complete the onboarding steps below in any order. Once complete, submit your program for approval by our team before you go live."
+                sections={adjustedSections}
+                onSectionClick={(id) => {
+                  setActiveSection(id as ActiveSection);
+                  markVisited(id);
+                }}
+                onContinue={() => setPhase('phase-2')}
+                continueLabel="Continue Onboarding"
+              />
+            ) : flowPath ? (
+              <PhaseHub
+                title="Onboarding"
+                description="You can complete the onboarding steps below in any order. Once complete, submit your program for approval by our team before you go live."
+                sections={adjustedSections}
+                onSectionClick={(id) => setActiveSection(id as ActiveSection)}
+                onContinue={() => setCompleted(true)}
+                continueLabel="Submit Application"
+              />
+            ) : null}
+          </div>
         </div>
-      </main>
-    </div>
+      ) : (
+        // Step view — with header
+        <>
+          <OnboardingHeader
+            phase={phase}
+            completedSections={completedCount}
+            totalSections={totalCount}
+            onLeave={goToHub}
+          />
+          <div className="px-12 py-10">
+            <div className="max-w-[400px] mx-auto">
+              {renderStepContent()}
+            </div>
+          </div>
+        </>
+      )}
+    </DashboardLayout>
   );
 }

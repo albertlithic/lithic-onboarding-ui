@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import FormField from '../FormField';
-import Input from '../Input';
-import Button from '../Button';
+import FormField from '../components/FormField';
+import Input from '../components/Input';
+import Button from '../components/Button';
 import { PersonData, PersonRole, createEmptyPerson } from '../types';
 
 interface PersonListProps {
@@ -55,19 +55,19 @@ function PersonCard({
     ? `${person.firstName} ${person.lastName}`.trim()
     : roleLabel;
 
-  const statusColor = person.status === 'completed' ? '#3F54BF' : person.status === 'invited' ? '#7F94FF' : '#444444';
+  const statusColor = person.status === 'completed' ? 'var(--accent-strong-bg)' : person.status === 'invited' ? 'var(--accent-strong-bg)' : 'var(--border-default)';
   const statusLabel = person.status === 'completed' ? 'Complete' : person.status === 'invited' ? 'Invited' : 'Pending';
 
   return (
-    <div className="bg-[#222222] rounded p-4 flex flex-col gap-3">
+    <div className="bg-[var(--bg-default)] rounded p-4 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-6 h-6 rounded bg-[#333333] flex items-center justify-center text-[#AAAAAA] text-sm font-medium">
+          <span className="w-6 h-6 rounded bg-[var(--primary-bg)] flex items-center justify-center text-[var(--fg-default)] text-sm font-medium">
             {index + 1}
           </span>
           <span
-            className="text-[#F0F0F0] text-sm font-medium"
-            style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+            className="text-[var(--fg-strong)] text-sm font-medium font-display"
+            style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
           >
             {displayName}
           </span>
@@ -77,7 +77,7 @@ function PersonCard({
           <button
             type="button"
             onClick={onRemove}
-            className="flex items-center gap-1 text-[#AAAAAA] text-xs hover:text-[#F0F0F0] transition-colors"
+            className="flex items-center gap-1 text-[var(--fg-default)] text-xs hover:text-[var(--fg-strong)] transition-colors"
           >
             <svg width="12" height="14" viewBox="0 0 12 14" fill="none">
               <path d="M1 3H11M4 3V2H8V3M2 3L2.8 12.1C2.9 12.6 3.3 13 3.8 13H8.2C8.7 13 9.1 12.6 9.2 12.1L10 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
@@ -149,17 +149,17 @@ export default function PersonList({ role, persons, onChange, onEditPerson, onSa
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         {config.title}
       </h1>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">
         {config.description}
       </p>
 
-      <p className="text-[#AAAAAA] text-xs leading-relaxed">
+      <p className="text-[var(--fg-default)] text-xs leading-relaxed">
         We collect this information to comply with federal regulations. Your data is encrypted and securely stored.
       </p>
 
@@ -183,10 +183,10 @@ export default function PersonList({ role, persons, onChange, onEditPerson, onSa
         <button
           type="button"
           onClick={addPerson}
-          className="w-full h-10 bg-[#333333] text-[#F0F0F0] text-sm font-semibold rounded flex items-center justify-center gap-2 hover:bg-[#3D3D3D] transition-colors"
+          className="w-full h-10 bg-[var(--primary-bg)] text-[var(--fg-strong)] text-sm font-semibold rounded flex items-center justify-center gap-2 hover:opacity-90 transition-colors"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M6 1V11M1 6H11" stroke="#F0F0F0" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M6 1V11M1 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
           Add {config.singularLabel}
         </button>

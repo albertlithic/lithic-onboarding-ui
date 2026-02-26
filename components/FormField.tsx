@@ -14,16 +14,16 @@ export default function FormField({ label, labelNote, helperText, children, html
       <div className="flex items-center justify-between">
         <label
           htmlFor={htmlFor}
-          className="text-[#F0F0F0] text-sm font-semibold"
+          className="text-[var(--fg-strong)] text-sm font-semibold"
         >
           {label}
         </label>
         {labelNote && (
-          <span className="text-[#AAAAAA] text-sm">{labelNote}</span>
+          <span className="text-[var(--fg-default)] text-sm">{labelNote}</span>
         )}
       </div>
       {helperText && (
-        <p className="text-[#AAAAAA] text-sm leading-relaxed">{helperText}</p>
+        <p className="text-[var(--fg-default)] text-sm leading-relaxed">{helperText}</p>
       )}
       {children}
     </div>

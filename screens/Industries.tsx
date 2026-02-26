@@ -1,7 +1,7 @@
 'use client';
 
-import Checkbox from '../Checkbox';
-import Button from '../Button';
+import Checkbox from '../components/Checkbox';
+import Button from '../components/Button';
 import { IndustriesData } from '../types';
 
 interface IndustriesProps {
@@ -25,13 +25,13 @@ export default function Industries({ data, onChange, onSave }: IndustriesProps) 
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         What You're Building
       </h1>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">
         Which of these apply to your business? If you're unsure, leave them unchecked.
       </p>
 

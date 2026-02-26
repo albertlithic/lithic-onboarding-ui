@@ -1,8 +1,8 @@
 'use client';
 
-import FormField from '../FormField';
-import FileUpload from '../FileUpload';
-import Button from '../Button';
+import FormField from '../components/FormField';
+import FileUpload from '../components/FileUpload';
+import Button from '../components/Button';
 import { FinancialDocsData } from '../types';
 
 interface DocumentCollectionProps {
@@ -18,8 +18,8 @@ export default function DocumentCollection({ data, onChange, onSave }: DocumentC
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         Financial Documents
       </h1>
@@ -42,7 +42,7 @@ export default function DocumentCollection({ data, onChange, onSave }: DocumentC
         </FormField>
       </div>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">
         Files uploaded through this page are securely encrypted, and protected
         for review by our compliance team.
       </p>

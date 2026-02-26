@@ -1,9 +1,9 @@
 'use client';
 
-import FormField from '../FormField';
-import Input from '../Input';
-import Checkbox from '../Checkbox';
-import Button from '../Button';
+import FormField from '../components/FormField';
+import Input from '../components/Input';
+import Checkbox from '../components/Checkbox';
+import Button from '../components/Button';
 import { ContactsData, ContactData } from '../types';
 
 interface ContactsProps {
@@ -33,8 +33,8 @@ function ContactSection({
   return (
     <div className="flex flex-col gap-4">
       <h2
-        className="text-[#F0F0F0] text-lg font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-lg font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         {title}
       </h2>
@@ -108,13 +108,13 @@ export default function Contacts({ data, onChange, onSave }: ContactsProps) {
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         Contacts
       </h1>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">
         Provide contact information for your technical and product update contacts.
       </p>
 
@@ -125,7 +125,7 @@ export default function Contacts({ data, onChange, onSave }: ContactsProps) {
         onChange={handleTechnicalChange}
       />
 
-      <div className="border-t border-[#2A2A2A] pt-4">
+      <div className="border-t border-[var(--border-default)] pt-4">
         <Checkbox
           checked={data.sameAsTechnical}
           onChange={handleSameToggle}

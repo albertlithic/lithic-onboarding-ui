@@ -1,10 +1,10 @@
 'use client';
 
-import FormField from '../FormField';
-import Input from '../Input';
-import Select from '../Select';
-import RadioButton from '../RadioButton';
-import Button from '../Button';
+import FormField from '../components/FormField';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import RadioButton from '../components/RadioButton';
+import Button from '../components/Button';
 import { PersonData, FlowPath, CitizenshipStatus } from '../types';
 
 const US_STATES = [
@@ -51,13 +51,13 @@ export default function PersonDetails({ person, flowPath, onChange, onSave, onBa
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         {roleLabel} Details
       </h1>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">
         We're required to collect this information to comply with federal Know Your Customer (KYC) regulations. Your data is encrypted end-to-end and never shared with third parties.
       </p>
 

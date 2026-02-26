@@ -1,3 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* Backgrounds */
+  --bg-default: #ffffff;
+  --bg-canvas: #fafafa;
+  --bg-strong: #f0f0f0;
+
+  /* Borders */
+  --border-default: #d8d8d8;
+  --border-muted: #e8e8e8;
+
+  /* Foreground / Text */
+  --fg-strong: #222222;
+  --fg-default: #707070;
+
+  /* Inputs */
+  --input-border: #d8d8d8;
+  --input-placeholder: #aaaaaa;
+  --input-fg: #222222;
+
+  /* Accent (blue) */
+  --accent-strong-bg: #5069e5;
+  --accent-strong-border: #3f54bf;
+  --accent-strong-fg: #ffffff;
+  --accent-bg: #edeffa;
+  --accent-border: #ced4f2;
+  --accent-fg: #3f54bf;
+
+  /* Primary (dark) */
+  --primary-bg: #454545;
+  --primary-border: #333333;
+  --primary-fg: #ffffff;
+
+  /* Secondary (white) */
+  --secondary-bg: #ffffff;
+  --secondary-fg: #222222;
+
+  /* Shadow */
+  --shadow: rgba(0, 0, 0, 0.05);
+
+  /* Success */
+  --success-bg: #008744;
+  --success-border: #006e37;
+
+  /* Spacing */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--fg-strong);
+  background-color: var(--bg-default);
+}

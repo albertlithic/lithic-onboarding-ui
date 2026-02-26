@@ -19,7 +19,7 @@ export default function FileUpload({ value, onChange, accept }: FileUploadProps)
 
   return (
     <div
-      className="w-full h-10 bg-[#222222] rounded flex items-center justify-center cursor-pointer hover:bg-[#2A2A2A] transition-colors border border-dashed border-[#444444] hover:border-[#7F94FF]"
+      className="w-full h-10 bg-white rounded flex items-center justify-center cursor-pointer hover:bg-[var(--bg-canvas)] transition-colors border border-dashed border-[var(--border-default)] hover:border-[var(--accent-strong-bg)]"
       onClick={() => inputRef.current?.click()}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
@@ -37,21 +37,21 @@ export default function FileUpload({ value, onChange, accept }: FileUploadProps)
       {value ? (
         <div className="flex items-center gap-2 px-3 w-full">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 12L5 9M12 2L9 5M5 9L9 5M5 9C4 10 2.5 10 1.5 9C0.5 8 0.5 6.5 1.5 5.5L5 2C6 1 7.5 1 8.5 2C9.5 3 9.5 4.5 8.5 5.5L5 9Z" stroke="#7F94FF" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M2 12L5 9M12 2L9 5M5 9L9 5M5 9C4 10 2.5 10 1.5 9C0.5 8 0.5 6.5 1.5 5.5L5 2C6 1 7.5 1 8.5 2C9.5 3 9.5 4.5 8.5 5.5L5 9Z" stroke="var(--accent-strong-bg)" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
-          <span className="text-[#F0F0F0] text-sm font-medium truncate">{value.name}</span>
+          <span className="text-[var(--fg-strong)] text-sm font-medium truncate">{value.name}</span>
           <button
             type="button"
-            className="ml-auto shrink-0 text-[#AAAAAA] hover:text-[#F0F0F0]"
+            className="ml-auto shrink-0 text-[var(--fg-default)] hover:text-[var(--fg-strong)]"
             onClick={(e) => { e.stopPropagation(); onChange(null); }}
           >
             ×
           </button>
         </div>
       ) : (
-        <div className="flex items-center gap-2 text-[#AAAAAA]">
+        <div className="flex items-center gap-2 text-[var(--fg-default)]">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1V13M1 7H13" stroke="#AAAAAA" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M7 1V13M1 7H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
           <span className="text-sm font-medium">Click to browse or drag files</span>
         </div>

@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import LithicLogo from '../LithicLogo';
-import FormField from '../FormField';
-import Input from '../Input';
-import Select from '../Select';
-import RadioButton from '../RadioButton';
-import Button from '../Button';
+import LithicLogo from '../components/LithicLogo';
+import FormField from '../components/FormField';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import RadioButton from '../components/RadioButton';
+import Button from '../components/Button';
 import { PersonData, FlowPath, PersonRole, CitizenshipStatus, createEmptyPerson } from '../types';
 
 const US_STATES = [
@@ -52,20 +52,20 @@ export default function InvitePersonForm({ role, flowPath, onSubmit }: InvitePer
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--bg-default)] flex items-center justify-center">
         <div className="w-[400px] flex flex-col items-center gap-4 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#3F54BF] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-[var(--accent-strong-bg)] flex items-center justify-center">
             <svg width="20" height="16" viewBox="0 0 20 16" fill="none">
               <path d="M2 8L8 14L18 2" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <h1
-            className="text-[#F0F0F0] text-2xl font-medium"
-            style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+            className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+            style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
           >
             Information Submitted
           </h1>
-          <p className="text-[#AAAAAA] text-sm leading-relaxed">
+          <p className="text-[var(--fg-default)] text-sm leading-relaxed">
             Thank you for providing your information. The requesting company will be notified.
           </p>
         </div>
@@ -74,14 +74,14 @@ export default function InvitePersonForm({ role, flowPath, onSubmit }: InvitePer
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-default)] flex flex-col">
       {/* Simple header */}
-      <header className="w-full flex items-center justify-center px-8 h-16 bg-[#1A1A1A] border-b border-[#2A2A2A]">
+      <header className="w-full flex items-center justify-center px-8 h-16 bg-[var(--bg-default)] border-b border-[var(--border-default)]">
         <div className="flex items-center gap-3">
           <LithicLogo />
           <span
-            className="text-[#F0F0F0] text-lg font-medium"
-            style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+            className="text-[var(--fg-strong)] text-lg font-medium font-display"
+            style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
           >
             Complete Your Information
           </span>
@@ -91,14 +91,14 @@ export default function InvitePersonForm({ role, flowPath, onSubmit }: InvitePer
       <main className="flex-1 flex justify-center py-10 px-4 overflow-y-auto">
         <div className="w-full max-w-[400px] flex flex-col gap-6">
           <h1
-            className="text-[#F0F0F0] text-2xl font-medium"
-            style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+            className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+            style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
           >
             {roleLabel} Information
           </h1>
 
-          <div className="bg-[#222222] rounded p-4">
-            <p className="text-[#AAAAAA] text-sm leading-relaxed">
+          <div className="bg-[var(--bg-default)] rounded p-4">
+            <p className="text-[var(--fg-default)] text-sm leading-relaxed">
               You've been invited to provide your information as part of a company's onboarding process with Lithic.
               We're required to collect this information to comply with federal regulations. Your data is encrypted end-to-end and never shared with unauthorized parties.
             </p>

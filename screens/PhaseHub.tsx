@@ -1,7 +1,7 @@
 'use client';
 
-import SectionCard from '../SectionCard';
-import Button from '../Button';
+import SectionCard from '../components/SectionCard';
+import Button from '../components/Button';
 import { HubSectionDef } from '../types';
 
 interface PhaseHubProps {
@@ -27,13 +27,13 @@ export default function PhaseHub({
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         {title}
       </h1>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">{description}</p>
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">{description}</p>
 
       <div className="flex flex-col gap-3">
         {sections.map((section) => (
@@ -47,7 +47,7 @@ export default function PhaseHub({
         ))}
       </div>
 
-      <p className="text-[#AAAAAA] text-xs">
+      <p className="text-[var(--fg-default)] text-xs">
         {completedCount} of {sections.length} sections completed
       </p>
 

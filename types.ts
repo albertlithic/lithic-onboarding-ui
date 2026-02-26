@@ -40,7 +40,7 @@ export interface BusinessDetailsPart2Data {
 
 // Person types
 export type PersonRole = 'control-person' | 'beneficial-owner' | 'authorized-signer';
-export type PersonStatus = 'pending' | 'invited' | 'completed';
+export type PersonStatus = 'pending' | 'invited' | 'completed' | 'submitted';
 export type CitizenshipStatus = 'us-citizen' | 'non-us-in-us' | 'non-us-outside-us';
 
 export interface PersonData {
@@ -100,6 +100,10 @@ export interface FinancialDocsData {
   financialStatements: File | null;
 }
 
+// External invitee view mode
+export type ViewMode = 'main' | 'external-invitee';
+export type ExternalInviteeStep = 'otp' | 'form';
+
 // Root onboarding state
 export interface OnboardingData {
   // Phase 1
@@ -112,6 +116,9 @@ export interface OnboardingData {
   persons: PersonData[];
   financialDocs: FinancialDocsData;
   contacts: ContactsData;
+  // Person management
+  charityNonProfitExemption: boolean;
+  hasUbos: boolean | null;
 }
 
 // Helper to resolve flow path

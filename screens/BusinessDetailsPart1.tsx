@@ -1,9 +1,9 @@
 'use client';
 
-import FormField from '../FormField';
-import Input from '../Input';
-import RadioButton from '../RadioButton';
-import Button from '../Button';
+import FormField from '../components/FormField';
+import Input from '../components/Input';
+import RadioButton from '../components/RadioButton';
+import Button from '../components/Button';
 import { BusinessDetailsPart1Data, CompanyType } from '../types';
 
 interface BusinessDetailsPart1Props {
@@ -39,8 +39,8 @@ export default function BusinessDetailsPart1({ data, onChange, onSave }: Busines
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         Business Details
       </h1>
@@ -93,7 +93,7 @@ export default function BusinessDetailsPart1({ data, onChange, onSave }: Busines
             {COMPANY_TYPES.map((ct) => (
               <div
                 key={ct.value}
-                className="bg-[#222222] rounded p-3 flex flex-col gap-1.5 cursor-pointer hover:bg-[#2A2A2A] transition-colors"
+                className="bg-[var(--bg-default)] rounded p-3 flex flex-col gap-1.5 cursor-pointer hover:bg-[var(--bg-canvas)] transition-colors"
                 onClick={() => onChange({ ...data, companyType: ct.value })}
               >
                 <RadioButton
@@ -101,7 +101,7 @@ export default function BusinessDetailsPart1({ data, onChange, onSave }: Busines
                   onChange={() => onChange({ ...data, companyType: ct.value })}
                   label={ct.label}
                 />
-                <p className="text-[#AAAAAA] text-xs leading-relaxed ml-[26px]">
+                <p className="text-[var(--fg-default)] text-xs leading-relaxed ml-[26px]">
                   {ct.description}
                 </p>
               </div>
@@ -110,7 +110,7 @@ export default function BusinessDetailsPart1({ data, onChange, onSave }: Busines
         </FormField>
       </div>
 
-      <p className="text-[#AAAAAA] text-sm leading-relaxed">
+      <p className="text-[var(--fg-default)] text-sm leading-relaxed">
         By proceeding, you confirm all information provided is truthful and accurate.
       </p>
 

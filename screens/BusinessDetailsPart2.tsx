@@ -1,9 +1,9 @@
 'use client';
 
-import FormField from '../FormField';
-import Input from '../Input';
-import Select from '../Select';
-import Button from '../Button';
+import FormField from '../components/FormField';
+import Input from '../components/Input';
+import Select from '../components/Select';
+import Button from '../components/Button';
 import { BusinessDetailsPart2Data, FlowPath } from '../types';
 
 const US_STATES = [
@@ -38,8 +38,8 @@ export default function BusinessDetailsPart2({ data, flowPath, onChange, onSave 
   return (
     <div className="flex flex-col gap-6">
       <h1
-        className="text-[#F0F0F0] text-2xl font-medium"
-        style={{ fontFamily: "'ABC Monument Grotesk', 'DM Sans', sans-serif" }}
+        className="text-[var(--fg-strong)] text-2xl font-medium font-display"
+        style={{ fontFamily: "'ABC Monument Grotesk', sans-serif" }}
       >
         Additional Business Details
       </h1>

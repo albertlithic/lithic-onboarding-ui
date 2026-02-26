@@ -19,17 +19,17 @@ export default function RadioButton({ id, checked, onChange, label }: RadioButto
         aria-checked={checked}
         onClick={onChange}
         type="button"
-        className="shrink-0 w-4 h-4 rounded-full border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7F94FF]"
-        style={{
-          backgroundColor: '#222222',
-          borderColor: checked ? '#7F94FF' : '#444444',
-        }}
+        className={`shrink-0 w-4 h-4 rounded-full border flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-strong-bg)] bg-white ${
+          checked
+            ? 'border-[var(--accent-strong-bg)]'
+            : 'border-[var(--input-border)]'
+        }`}
       >
         {checked && (
-          <span className="w-2 h-2 rounded-full bg-[#7F94FF]" />
+          <span className="w-2 h-2 rounded-full bg-[var(--accent-strong-bg)]" />
         )}
       </button>
-      <span className="text-[#F0F0F0] text-sm font-semibold">{label}</span>
+      <span className="text-[var(--fg-strong)] text-sm font-semibold">{label}</span>
     </label>
   );
 }

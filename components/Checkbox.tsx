@@ -20,8 +20,11 @@ export default function Checkbox({ id, checked, onChange, label }: CheckboxProps
         role="checkbox"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className="shrink-0 mt-0.5 w-4 h-4 rounded flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7F94FF]"
-        style={{ backgroundColor: checked ? '#3F54BF' : '#222222' }}
+        className={`shrink-0 mt-0.5 w-4 h-4 rounded flex items-center justify-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-strong-bg)] ${
+          checked
+            ? 'bg-[var(--accent-strong-bg)]'
+            : 'bg-white border border-[var(--input-border)]'
+        }`}
         type="button"
       >
         {checked && (
@@ -36,7 +39,7 @@ export default function Checkbox({ id, checked, onChange, label }: CheckboxProps
           </svg>
         )}
       </button>
-      <span className="text-[#F0F0F0] text-sm font-medium leading-relaxed">{label}</span>
+      <span className="text-[var(--fg-strong)] text-sm font-medium leading-relaxed">{label}</span>
     </label>
   );
 }
